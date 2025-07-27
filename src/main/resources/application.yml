@@ -9,6 +9,10 @@ server.error:
 
 ---
 
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+
 spring:
   config:
     import: optional:file:.env[.properties]

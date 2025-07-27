@@ -54,7 +54,7 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi securedApiGroup() {
         return GroupedOpenApi.builder()
-                .group("Defailt API")
+                .group("2-Defailt API")
                 // 그룹 path
                 .pathsToMatch("/dataHub/**")
 
@@ -64,7 +64,7 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi publicApiGroup() {
         return GroupedOpenApi.builder()
-                .group("Public API")
+                .group("1-Public API")
                 .pathsToMatch("/user/**")
                 .addOperationCustomizer(((operation, handlerMethod) -> {
                     if (operation.getSecurity() != null) { // operation.getSecurity()가 null일 수 있으므로 null 체크

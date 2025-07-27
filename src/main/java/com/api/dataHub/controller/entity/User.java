@@ -74,7 +74,6 @@ public class User implements UserDetails {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
         }
-        // this.createDate = LocalDateTime.now(); // <<--- 이 줄을 제거하세요! @CreationTimestamp가 처리합니다.
         if (this.useYn == null) {
             this.useYn = "Y";
         }

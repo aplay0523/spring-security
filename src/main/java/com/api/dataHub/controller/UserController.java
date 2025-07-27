@@ -1,26 +1,70 @@
 package com.api.dataHub.controller;
 
+import com.api.dataHub.controller.entity.User;
 import com.api.dataHub.controller.vo.request.RegisterUserDto;
 import com.api.dataHub.controller.vo.response.ResponseHeadVo;
+import com.api.dataHub.controller.vo.response.ResponseSimpleVo;
 import com.api.dataHub.controller.vo.response.ResponseVo;
+import com.api.dataHub.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "2-회원가입")
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDto registerUserDto) throws Exception {
+    private final UserService userService;
 
-        HttpStatus resMsg = HttpStatus.OK;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-        ResponseVo responseVo = new ResponseVo();
-        ResponseHeadVo responseHeadVo = new ResponseHeadVo();
-        responseVo.setHead(responseHeadVo);
+    @Operation(
+            summary = "1. 회원가입",
+            description = """
+                    - 회원가입을 진행합니다.
+                    
+                    - Request Body 작성 방법
+                    1. userId : 사용자 아이디를 입력해주세요.
+                    2. userPwd : 사용자 비밀번호를 입력해주세요.
+                    3. userName : 사용자 이름을 입력해주세요.
+                    4. groupRole : 사용자 권한을 입력해주세요.(ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = @Content(mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad Request"),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            }
+    )
+    @PostMapping(value = "/user/regist", produces = "application/json")
+    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) throws Exception {
 
-        return ResponseEntity.status(resMsg).body(responseVo);
+        User user = new User();
+        user.setUserId(registerUserDto.getUserId());
+        user.setUserPwd(passwordEncoder.encode(registerUserDto.getUserPwd()));
+        user.setUserName(registerUserDto.getUserName());
+        user.setGroupRole(registerUserDto.getGroupRole());
+        userService.createUser(user);
+
+        return ResponseEntity.ok().body(
+                new ResponseSimpleVo(
+                        HttpStatus.OK.value(), "성공"
+                )
+        );
     }
 }

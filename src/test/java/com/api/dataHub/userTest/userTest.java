@@ -2,7 +2,7 @@ package com.api.dataHub.userTest;
 
 import com.api.dataHub.common.repository.UserRepository;
 import com.api.dataHub.controller.entity.User;
-import com.api.dataHub.service.UserService;
+import com.api.dataHub.service.AuthService;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class userTest {
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     @Autowired
     private UserRepository userRepository;

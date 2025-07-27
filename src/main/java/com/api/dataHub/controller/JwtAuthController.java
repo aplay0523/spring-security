@@ -7,6 +7,7 @@ import com.api.dataHub.controller.vo.response.ResponseHeadVo;
 import com.api.dataHub.controller.vo.response.ResponseVo;
 import com.api.dataHub.security.provider.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,10 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "엑세스 토큰 발급", description = "사용자 엑세스 토큰 발급")
+@Tag(name = "1-엑세스 토큰 발급" /*description = "사용자 엑세스 토큰 발급"*/)
 @RestController
 @RequiredArgsConstructor
 public class JwtAuthController {
@@ -42,12 +42,11 @@ public class JwtAuthController {
                     
                     - Request Body 작성 방법
                     1. userId : 사용자 아이디를 입력해주세요.
-                    2. userPwd : 사용자 비밀번호를 입력해주세요. 
+                    2. userPwd : 사용자 비밀번호를 입력해주세요.
                     """,
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
-                        content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = OAuth2AccessTokenResponse.class)
+                        content = @Content(mediaType = "application/json"
                         )
                     ),
                     @ApiResponse(responseCode = "400", description = "Bad Request"),

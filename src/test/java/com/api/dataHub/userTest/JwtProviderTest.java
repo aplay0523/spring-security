@@ -36,7 +36,8 @@ public class JwtProviderTest {
 
         boolean lean = jwtTokenProvider.validateToken(token);
 
-        System.out.print(lean);
+        System.out.print(token);
+        System.out.print("사용자 아이디 : "+ userId);
         assertEquals(user.getUserId(), userId);
         assertTrue(lean);
     }
