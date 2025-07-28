@@ -56,11 +56,9 @@ public class WebSecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/user/get-token",
-                                "/user/regist"
+                                "/public/**"
                         ).permitAll()
-//                        .requestMatchers("/dataHub/**").hasRole("ADMIN")
-//                        .requestMatchers("/dataHub/**").hasRole("MANAGER")
+                        .requestMatchers("/dataHub/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

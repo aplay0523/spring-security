@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import java.util.List;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,15 +39,15 @@ public class SwaggerConfig {
                                 .type(Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                .description("JWT 토큰을 입력하세요. (예 : Bearer {accessToken})"))
+                                .description("JWT 토큰을 입력하세요. (예 : {accessToken})"))
                         .addSecuritySchemes("apiKeyAuth", new SecurityScheme()
                                 .type(Type.APIKEY)
-                                .in(In.HEADER)
-                                .name("X-API-KEY")
+                                .in(In.QUERY)
+                                .name("apiKeyAuth")
                                 .description("API Key를 입력하세요. API 사용에 반드시 필요합니다.")
                         )
                 )
-                .addSecurityItem(new SecurityRequirement().addList("apiKeyAuth"));
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth").addList("apiKeyAuth"));
 
     }
 
@@ -65,12 +66,11 @@ public class SwaggerConfig {
     public GroupedOpenApi publicApiGroup() {
         return GroupedOpenApi.builder()
                 .group("1-Public API")
-                .pathsToMatch("/user/**")
+                .pathsToMatch("/public/**")
                 .addOperationCustomizer(((operation, handlerMethod) -> {
                     if (operation.getSecurity() != null) { // operation.getSecurity()가 null일 수 있으므로 null 체크
-                        operation.getSecurity().removeIf(sr -> sr.containsKey("apiKeyAuth"));
+                        operation.getSecurity().removeIf(sr -> sr.containsKey("apiKeyAuth") || sr.containsKey("bearerAuth"));
                     }
-                    operation.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
                     return operation;
                 }))
                 .build();

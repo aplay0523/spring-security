@@ -53,7 +53,7 @@ public class JwtAuthController {
                     @ApiResponse(responseCode = "500", description = "Internal Server Error")
             }
     )
-    @PostMapping(value = "/user/get-token", produces = "application/json")
+    @PostMapping(value = "/public/get-token", produces = "application/json")
     public ResponseEntity<?> userAccessToken(@RequestBody JwtRequestVo jwtRequestVo) throws Exception {
 
         HttpStatus resMsg = HttpStatus.OK;

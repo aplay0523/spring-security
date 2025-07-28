@@ -1,5 +1,7 @@
 package com.api.dataHub.userTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.api.dataHub.common.repository.UserRepository;
 import com.api.dataHub.controller.entity.User;
 import com.api.dataHub.service.AuthService;
@@ -12,8 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest
 @Transactional
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -21,10 +21,8 @@ public class userTest {
 
     @Autowired
     private AuthService authService;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -47,4 +45,8 @@ public class userTest {
         System.out.println("암호화된 비밀번호: " + saved.get().getUserPwd());
     }
 
+    @Test
+    void userUpdate() {
+
+    }
 }

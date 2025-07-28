@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret.key}")
+    @Value("${api.key}")
     private String secretKey;
 
     @Value("${jwt.expiration}")
@@ -78,7 +78,13 @@ public class JwtTokenProvider {
     }
 
     public String resolevToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
+        String token = "";
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+        return token;
     }
 
     public boolean validateToken(String jwtToken) {

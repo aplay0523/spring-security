@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,10 +44,10 @@ public class User implements UserDetails {
     private String groupRole;
 
     @CreationTimestamp
-    @Column(name = "create_date")
+    @Column(name = "create_date", updatable = false)
     private LocalDateTime createDate;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "update_date")
     private LocalDateTime updateDate;
 

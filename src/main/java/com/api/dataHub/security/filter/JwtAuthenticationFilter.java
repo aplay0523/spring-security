@@ -10,7 +10,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Enumeration;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +23,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAuthenticationFilter extends GenericFilter {
 
-    @Value("${jwt.secret.key}")
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
+    @Value("${api.key}")
     private String secretKey;
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -30,7 +35,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletrequest;
         String token = jwtTokenProvider.resolevToken(request);
-        String requestApiKey = request.getHeader("apiKeyAuth");
+        String requestApiKey = request.getParameter("apiKeyAuth");
         String requestUri = request.getRequestURI();
 
         if(requestUri.contains("/dataHub/") && !(requestUri.matches("(.*?(get-token)).*"))) {

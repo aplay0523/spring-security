@@ -1,15 +1,20 @@
 package com.api.dataHub.controller;
 
+import com.api.dataHub.common.ErrorCode;
+import com.api.dataHub.common.exception.BusinessException;
 import com.api.dataHub.controller.entity.User;
 import com.api.dataHub.controller.vo.request.RegisterUserDto;
+import com.api.dataHub.controller.vo.request.UserDetailDto;
 import com.api.dataHub.controller.vo.response.ResponseHeadVo;
 import com.api.dataHub.controller.vo.response.ResponseSimpleVo;
 import com.api.dataHub.controller.vo.response.ResponseVo;
 import com.api.dataHub.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +56,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Internal Server Error")
             }
     )
-    @PostMapping(value = "/user/regist", produces = "application/json")
+    @PostMapping(value = "/public/regist", produces = "application/json")
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) throws Exception {
 
         User user = new User();
@@ -60,6 +65,33 @@ public class UserController {
         user.setUserName(registerUserDto.getUserName());
         user.setGroupRole(registerUserDto.getGroupRole());
         userService.createUser(user);
+
+        return ResponseEntity.ok().body(
+                new ResponseSimpleVo(
+                        HttpStatus.OK.value(), "성공"
+                )
+        );
+    }
+
+    @Operation(
+            summary = "사용자 업데이트",
+            description = """
+                    - 업데이트
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
+    )
+    @PostMapping(value = "/dataHub/updateUser", produces = "application/json")
+    public ResponseEntity<?> updateUser(@RequestBody UserDetailDto userDetailDto) {
+
+        if(userDetailDto.getUserId() != null) {
+            userService.updateUser(userDetailDto);
+        } else if(userDetailDto.getUuid() != null) {
+            userService.updateByUserUuid(userDetailDto);
+        }
 
         return ResponseEntity.ok().body(
                 new ResponseSimpleVo(
