@@ -18,6 +18,10 @@
             <AppenderRef ref="console"/>
         </Logger>
 
+        <Logger name="org.springframework.security" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+
         <Logger name="com.zaxxer.hikari" level="error" additivity="false">
             <AppenderRef ref="console"/>
         </Logger>

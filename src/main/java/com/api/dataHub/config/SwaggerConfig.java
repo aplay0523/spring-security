@@ -58,7 +58,6 @@ public class SwaggerConfig {
                 .group("2-Defailt API")
                 // 그룹 path
                 .pathsToMatch("/dataHub/**")
-
                 .build();
     }
 

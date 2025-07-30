@@ -2,16 +2,18 @@ package com.api.dataHub.controller;
 
 import com.api.dataHub.controller.entity.User;
 import com.api.dataHub.controller.vo.request.JwtRequestVo;
+import com.api.dataHub.controller.vo.request.RegisterUserDto;
 import com.api.dataHub.controller.vo.response.JwtResponseVo;
 import com.api.dataHub.controller.vo.response.ResponseHeadVo;
+import com.api.dataHub.controller.vo.response.ResponseSimpleVo;
 import com.api.dataHub.controller.vo.response.ResponseVo;
 import com.api.dataHub.security.provider.JwtTokenProvider;
+import com.api.dataHub.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +33,8 @@ public class JwtAuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     /*
     * 사용자 엑세스 Jwt 토큰 발급
@@ -95,5 +99,42 @@ public class JwtAuthController {
             return ResponseEntity.status(resMsg).body(responseVo);
         }
 
+    }
+
+    @Operation(
+            summary = "1. 회원가입",
+            description = """
+                    - 회원가입을 진행합니다.
+                    
+                    - Request Body 작성 방법
+                    1. userId : 사용자 아이디를 입력해주세요.
+                    2. userPwd : 사용자 비밀번호를 입력해주세요.
+                    3. userName : 사용자 이름을 입력해주세요.
+                    4. groupRole : 사용자 권한을 입력해주세요.(ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = @Content(mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad Request"),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            }
+    )
+    @PostMapping(value = "/public/regist", produces = "application/json")
+    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) throws Exception {
+
+        User user = new User();
+        user.setUserId(registerUserDto.getUserId());
+        user.setUserPwd(passwordEncoder.encode(registerUserDto.getUserPwd()));
+        user.setUserName(registerUserDto.getUserName());
+        user.setGroupRole(registerUserDto.getGroupRole());
+        userService.createUser(user);
+
+        return ResponseEntity.ok().body(
+                new ResponseSimpleVo(
+                        HttpStatus.OK.value(), "성공"
+                )
+        );
     }
 }

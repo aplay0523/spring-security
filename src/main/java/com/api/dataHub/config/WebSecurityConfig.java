@@ -56,7 +56,8 @@ public class WebSecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/public/**"
+                                "/public/**",
+                                "/error"
                         ).permitAll()
                         .requestMatchers("/dataHub/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest().authenticated()

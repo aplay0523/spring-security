@@ -13,4 +13,16 @@
  * backEnd: Spring Boot Web(RESTful API)
  * Security:Spring Security, JWT(JJWT)
  * Swagger3.0: SpringDoc OpenAPI 2.7.0
- * TEST: JUnit 5
+ * TEST: JUnit 5, postman
+
+
+# Swagger API List
+## public
+* register /post public/register
+* login /post public/get-token
+
+## Defailt
+* updateUser /post /dataHub/user
+* getUser /get /dataHub/user/{uuid}
+* getUsers /get /dataHub/users
+* deleteUser /delete /dataHub/user/{uuid}

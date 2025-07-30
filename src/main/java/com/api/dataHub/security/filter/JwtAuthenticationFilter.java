@@ -35,7 +35,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletrequest;
         String token = jwtTokenProvider.resolevToken(request);
-        String requestApiKey = request.getParameter("apiKeyAuth");
+//        String requestApiKey = request.getParameter("apiKeyAuth");
+        String requestApiKey = secretKey;
         String requestUri = request.getRequestURI();
 
         if(requestUri.contains("/dataHub/") && !(requestUri.matches("(.*?(get-token)).*"))) {

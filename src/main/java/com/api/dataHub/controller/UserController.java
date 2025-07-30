@@ -1,29 +1,25 @@
 package com.api.dataHub.controller;
 
-import com.api.dataHub.common.ErrorCode;
-import com.api.dataHub.common.exception.BusinessException;
-import com.api.dataHub.controller.entity.User;
-import com.api.dataHub.controller.vo.request.RegisterUserDto;
 import com.api.dataHub.controller.vo.request.UserDetailDto;
-import com.api.dataHub.controller.vo.response.ResponseHeadVo;
+import com.api.dataHub.controller.vo.response.ResponseBodyVo;
+import com.api.dataHub.controller.vo.response.ResponseListVo;
 import com.api.dataHub.controller.vo.response.ResponseSimpleVo;
-import com.api.dataHub.controller.vo.response.ResponseVo;
 import com.api.dataHub.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "2-회원가입")
@@ -33,38 +29,35 @@ public class UserController {
 
     private final UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Operation(
-            summary = "1. 회원가입",
+            summary = "사용자 업데이트",
             description = """
-                    - 회원가입을 진행합니다.
+                    - 사용자 정보를 업데이트합니다.
                     
-                    - Request Body 작성 방법
-                    1. userId : 사용자 아이디를 입력해주세요.
-                    2. userPwd : 사용자 비밀번호를 입력해주세요.
-                    3. userName : 사용자 이름을 입력해주세요.
-                    4. groupRole : 사용자 권한을 입력해주세요.(ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
+                    - Body
+                    - 변경할 객체만 작성해주세요.(uuid 또는 userId는 필수입니다.)
+                    1. uuid : 사용자 키
+                    2. userId : 사용자 아이디
+                    3. userPwd : 사용자 비밀번호
+                    4. userName : 사용자 명
+                    5. groupRole : 권한 (ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
+                    
+                    - API 키, JWT 토큰이 필요합니다.
                     """,
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
-                            content = @Content(mediaType = "application/json"
-                            )
-                    ),
-                    @ApiResponse(responseCode = "400", description = "Bad Request"),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+                            content = @Content(mediaType = "application/json")
+                    )
             }
     )
-    @PostMapping(value = "/public/regist", produces = "application/json")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) throws Exception {
+    @PostMapping(value = "/dataHub/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@RequestBody UserDetailDto userDetailDto) {
 
-        User user = new User();
-        user.setUserId(registerUserDto.getUserId());
-        user.setUserPwd(passwordEncoder.encode(registerUserDto.getUserPwd()));
-        user.setUserName(registerUserDto.getUserName());
-        user.setGroupRole(registerUserDto.getGroupRole());
-        userService.createUser(user);
+        if(userDetailDto.getUserId() != null) {
+            userService.updateUser(userDetailDto);
+        } else if(userDetailDto.getUuid() != null) {
+            userService.updateByUserUuid(userDetailDto);
+        }
 
         return ResponseEntity.ok().body(
                 new ResponseSimpleVo(
@@ -74,9 +67,14 @@ public class UserController {
     }
 
     @Operation(
-            summary = "사용자 업데이트",
+            summary = "사용자 조회",
             description = """
-                    - 업데이트
+                    - 사용자를 조회합니다.
+                    
+                    - Body
+                    1. uuid : 사용자 키
+                    
+                    - API 키, JWT 토큰이 필요합니다.
                     """,
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
@@ -84,14 +82,63 @@ public class UserController {
                     )
             }
     )
-    @PostMapping(value = "/dataHub/updateUser", produces = "application/json")
-    public ResponseEntity<?> updateUser(@RequestBody UserDetailDto userDetailDto) {
+    @GetMapping(value = "/dataHub/user/{uuid}")
+    public ResponseEntity<?> getUserByUuid(@PathVariable("uuid") UUID uuid) {
 
-        if(userDetailDto.getUserId() != null) {
-            userService.updateUser(userDetailDto);
-        } else if(userDetailDto.getUuid() != null) {
-            userService.updateByUserUuid(userDetailDto);
-        }
+        return ResponseEntity.ok().body(
+                new ResponseBodyVo(userService.getDetailUserByUuid(uuid),
+                        HttpStatus.OK.value(), "성공"
+                )
+        );
+    }
+
+    @Operation(
+            summary = "사용자 목록 조회",
+            description = """
+                    - 사용자를 목록 조회합니다.
+                    
+                    - Body
+                    1. groupRole : 권한
+                    2. useYn : 계정 잠금 유무
+                    
+                    - API 키, JWT 토큰이 필요합니다.
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
+    )
+    @GetMapping(value = "/dataHub/users")
+    public ResponseEntity<?> getUserByUuid(@RequestParam("groupRole") String groupRole, @RequestParam("useYn") String useYn) {
+
+        return ResponseEntity.ok().body(
+                new ResponseBodyVo(new ResponseListVo<>(userService.getDetailUserList(groupRole, useYn)),
+                        HttpStatus.OK.value(), "성공"
+                )
+        );
+    }
+
+    @Operation(
+            summary = "사용자 삭제",
+            description = """
+                    - 사용자 삭제 진행합니다.
+                    
+                    - Body
+                    1. uuid : 사용자 키
+                    
+                    - API 키, JWT 토큰이 필요합니다.
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
+    )
+    @DeleteMapping(value = "/dataHub/user/{uuid}")
+    public ResponseEntity<?> delUserByUuid(@PathVariable("uuid") UUID uuid) {
+
+        userService.deleteByUserUuid(uuid);
 
         return ResponseEntity.ok().body(
                 new ResponseSimpleVo(
