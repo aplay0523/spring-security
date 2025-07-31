@@ -27,7 +27,8 @@ jobs:
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           source: |
-            build/libs/*.jar Dockerfile
+            ./build/libs/*.jar 
+            ./Dockerfile
           target: /home/uk/app
 
       - name: Set up SSH key
@@ -43,7 +44,7 @@ jobs:
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           script: |
-            cd /home/uk/build/libs
+            cd /home/uk/app
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             docker build -t datahub-image:latest .
             docker stop datahub-container || true
