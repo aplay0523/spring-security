@@ -43,7 +43,6 @@ jobs:
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           script: |
-            cd /home/uk/app
             docker build -t datahub-image:latest .
             docker stop datahub-container || true
             docker rm datahub-container || true
