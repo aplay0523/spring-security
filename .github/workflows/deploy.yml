@@ -43,6 +43,7 @@ jobs:
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           script: |
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}"
             docker build -t datahub-image:latest .
             docker stop datahub-container || true
             docker rm datahub-container || true
