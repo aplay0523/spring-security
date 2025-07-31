@@ -23,6 +23,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.WSL2_SSH_HOST }}
+          port: ${{ secrets.WSL2_SSH_PORT }}
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           source: |
