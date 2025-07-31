@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           source: |
-            ./build/libs/*.jar 
+            ./build/libs/dataHub-0.0.1.jar 
             ./Dockerfile
           target: /home/uk/app
 
