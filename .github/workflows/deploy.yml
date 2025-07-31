@@ -13,6 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Build jar
+        run: ./gradlew bootJar
+
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.7.0
         with:
@@ -25,7 +28,10 @@ jobs:
           port: ${{ secrets.WSL2_SSH_PORT }}
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
+          source: build/libs/*.jar Dockerfile
+          target: /home/uk/app
           script: |
+            cd /home/uk/app
             docker build -t datahub-image:latest .
             docker stop datahub-container || true
             docker rm datahub-container || true
