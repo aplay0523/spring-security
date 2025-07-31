@@ -19,6 +19,13 @@ jobs:
       - name: Build jar
         run: ./gradlew bootJar
 
+      - name: Check files exist before copy
+        run: |
+          echo "CWD: $(pwd)"
+          ls -al ./build/libs
+          ls -al ./Dockerfile
+        working-directory: ./dataHubApi
+
       - name: Copy files
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -30,6 +37,7 @@ jobs:
             ./build/libs/dataHub-0.0.1.jar 
             ./Dockerfile
           target: /home/uk/app
+        working-directory: ./dataHubApi
 
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.7.0
