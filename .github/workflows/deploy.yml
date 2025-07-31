@@ -1,0 +1,33 @@
+name: Deploy to WSL2 Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.WSL2_SSH_HOST }}
+          port: ${{ secrets.WSL2_SSH_PORT }}
+          username: ${{ secrets.WSL2_SSH_USER }}
+          key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
+          script: |
+            docker build -t datahub-image:latest .
+            docker stop datahub-container || true
+            docker rm datahub-container || true
+            docker run -d --name datahub-container -p 8088:8088 --env-file .env datahub-image:latest
+          

@@ -56,8 +56,7 @@ public class UserService {
                 .map(setUser -> {
                     try {
 
-                        if (userDetailDto.getUserPwd().isEmpty()
-                                || userDetailDto.getUserPwd() != null) {
+                        if (userDetailDto.getUserPwd() != null && userDetailDto.getUserPwd().isEmpty()) {
                             userDetailDto.setUserPwd(
                                     passwordEncoder.encode(userDetailDto.getUserPwd())
                             );
@@ -99,8 +98,7 @@ public class UserService {
                 .map(setUser -> {
                     try {
 
-                        if (userDetailDto.getUserPwd().isEmpty()
-                                || userDetailDto.getUserPwd() != null) {
+                        if (userDetailDto.getUserPwd() != null && userDetailDto.getUserPwd().isEmpty()) {
                             userDetailDto.setUserPwd(
                                     passwordEncoder.encode(userDetailDto.getUserPwd())
                             );

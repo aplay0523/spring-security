@@ -1,7 +1,6 @@
 package com.api.dataHub.common.repository;
 
 import com.api.dataHub.controller.entity.User;
-import com.api.dataHub.controller.vo.request.UserDetailDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

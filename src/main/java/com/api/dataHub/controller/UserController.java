@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "2-회원가입")
+@Tag(name = "사용자")
 @RestController
 @RequiredArgsConstructor
 public class UserController {
