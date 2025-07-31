@@ -48,5 +48,5 @@ jobs:
             docker build -t datahub-image:latest .
             docker stop datahub-container || true
             docker rm datahub-container || true
-            docker run -d --name datahub-container -p 8088:8088 --env-file .env datahub-image:latest
+            docker run -d --name datahub-container -p 8088:8088 --network db-network --env-file .env datahub-image:latest
           
