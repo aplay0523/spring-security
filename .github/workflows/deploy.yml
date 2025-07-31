@@ -13,22 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x ./gradlew
 
-      - name: Build jar
-        run: ./gradlew bootJar
+#      - name: Build jar
+#        run: ./gradlew bootJar
 
-      - name: Copy files
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.WSL2_SSH_HOST }}
-          port: ${{ secrets.WSL2_SSH_PORT }}
-          username: ${{ secrets.WSL2_SSH_USER }}
-          key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
-          source: |
-            build/libs/*.jar
-          target: /home/uk/app
+#      - name: Copy files
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.WSL2_SSH_HOST }}
+#          port: ${{ secrets.WSL2_SSH_PORT }}
+#          username: ${{ secrets.WSL2_SSH_USER }}
+#          key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
+#          source: |
+#            build/libs/*.jar
+#          target: /home/uk/app
 
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.7.0
@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.WSL2_SSH_USER }}
           key: ${{ secrets.WSL2_SSH_PRIVATE_KEY }}
           script: |
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}"
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             docker build -t datahub-image:latest .
             docker stop datahub-container || true
             docker rm datahub-container || true
