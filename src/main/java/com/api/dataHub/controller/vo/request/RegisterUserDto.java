@@ -17,7 +17,7 @@ public class RegisterUserDto {
     private String userId;
     @NotBlank(message = "패스워드는 필수입니다.")
     private String userPwd;
-    private String userName;
+    private String name;
     @NotBlank(message = "권한은 필수입니다.")
     private String groupRole;
 

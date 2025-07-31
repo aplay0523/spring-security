@@ -127,7 +127,7 @@ public class JwtAuthController {
         User user = new User();
         user.setUserId(registerUserDto.getUserId());
         user.setUserPwd(passwordEncoder.encode(registerUserDto.getUserPwd()));
-        user.setUserName(registerUserDto.getUserName());
+        user.setName(registerUserDto.getName());
         user.setGroupRole(registerUserDto.getGroupRole());
         userService.createUser(user);
 

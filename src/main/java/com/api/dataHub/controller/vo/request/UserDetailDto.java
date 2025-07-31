@@ -3,14 +3,13 @@ package com.api.dataHub.controller.vo.request;
 import com.api.dataHub.controller.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@JsonInclude(Include.NON_NULL) // null, length 0, isEmpty = true 제외
+@JsonInclude(Include.NON_NULL) // null
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +17,7 @@ public class UserDetailDto {
     private UUID uuid;
     private String userId;
     private String userPwd;
-    private String userName;
+    private String name;
     private String groupRole;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
@@ -27,7 +26,7 @@ public class UserDetailDto {
     public UserDetailDto(User user) {
         this.uuid = user.getUuid();
         this.userId = user.getUserId();
-        this.userName = user.getUsername();
+        this.name = user.getName();
         this.groupRole = user.getGroupRole();
         this.createDate = user.getCreateDate();
         this.updateDate = user.getUpdateDate();

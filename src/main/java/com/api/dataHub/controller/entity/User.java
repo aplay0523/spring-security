@@ -38,7 +38,7 @@ public class User implements UserDetails {
     private String userPwd;
 
     @Column(name = "user_name")
-    private String userName;
+    private String name;
 
     @Column(name = "group_role")
     private String groupRole;
