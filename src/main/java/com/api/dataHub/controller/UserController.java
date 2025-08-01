@@ -1,5 +1,7 @@
 package com.api.dataHub.controller;
 
+import com.api.dataHub.common.ErrorCode;
+import com.api.dataHub.common.exception.BusinessException;
 import com.api.dataHub.controller.vo.request.UserDetailDto;
 import com.api.dataHub.controller.vo.response.ResponseBodyVo;
 import com.api.dataHub.controller.vo.response.ResponseListVo;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "사용자")
+@Tag(name = "사용자", description = "API 키(15968aad-ff43-484f-b5b5-b741fda1f521), 토큰 필요")
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -98,8 +100,8 @@ public class UserController {
                     - 사용자를 목록 조회합니다.
                     
                     - Body
-                    1. groupRole : 권한
-                    2. useYn : 계정 잠금 유무
+                    1. groupRole : 권한 (ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
+                    2. useYn : 계정 잠금 유무 (Y, N)
                     
                     - API 키, JWT 토큰이 필요합니다.
                     """,
@@ -112,11 +114,15 @@ public class UserController {
     @GetMapping(value = "/dataHub/users")
     public ResponseEntity<?> getUserByUuid(@RequestParam("groupRole") String groupRole, @RequestParam("useYn") String useYn) {
 
-        return ResponseEntity.ok().body(
-                new ResponseBodyVo(new ResponseListVo<>(userService.getDetailUserList(groupRole, useYn)),
-                        HttpStatus.OK.value(), "성공"
-                )
-        );
+        if(groupRole.equals("ROLE_ADMIN") || groupRole.equals("ROLE_MANAGER") || groupRole.equals("ROLE_USER")) {
+            return ResponseEntity.ok().body(
+                    new ResponseBodyVo(new ResponseListVo<>(userService.getDetailUserList(groupRole, useYn)),
+                            HttpStatus.OK.value(), "성공"
+                    )
+            );
+        } else {
+            throw new BusinessException(ErrorCode.VALIDATION_FAILED);
+        }
     }
 
     @Operation(

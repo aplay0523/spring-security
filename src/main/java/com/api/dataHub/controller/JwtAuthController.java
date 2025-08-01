@@ -4,8 +4,9 @@ import com.api.dataHub.controller.entity.User;
 import com.api.dataHub.controller.vo.request.JwtRequestVo;
 import com.api.dataHub.controller.vo.request.RegisterUserDto;
 import com.api.dataHub.controller.vo.response.JwtResponseVo;
+import com.api.dataHub.controller.vo.response.ResponseBodyVo;
 import com.api.dataHub.controller.vo.response.ResponseHeadVo;
-import com.api.dataHub.controller.vo.response.ResponseSimpleVo;
+import com.api.dataHub.controller.vo.response.ResponseIdVo;
 import com.api.dataHub.controller.vo.response.ResponseVo;
 import com.api.dataHub.security.provider.JwtTokenProvider;
 import com.api.dataHub.service.UserService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "1-엑세스 토큰 발급" /*description = "사용자 엑세스 토큰 발급"*/)
+@Tag(name = "엑세스 토큰 발급" /*description = "사용자 엑세스 토큰 발급"*/)
 @RestController
 @RequiredArgsConstructor
 public class JwtAuthController {
@@ -40,7 +42,7 @@ public class JwtAuthController {
     * 사용자 엑세스 Jwt 토큰 발급
     */
     @Operation(
-            summary = "사용자 엑세스 토큰 발급",
+            summary = "2. 사용자 엑세스 토큰 발급",
             description = """
                     - 사용자 엑세스 토큰을 발급합니다.
                     
@@ -124,17 +126,25 @@ public class JwtAuthController {
     @PostMapping(value = "/public/regist", produces = "application/json")
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) throws Exception {
 
-        User user = new User();
-        user.setUserId(registerUserDto.getUserId());
-        user.setUserPwd(passwordEncoder.encode(registerUserDto.getUserPwd()));
-        user.setName(registerUserDto.getName());
-        user.setGroupRole(registerUserDto.getGroupRole());
-        userService.createUser(user);
+        HttpStatus resMsg = HttpStatus.OK;
+        ResponseVo responseVo = new ResponseVo();
+        ResponseHeadVo responseHeadVo = new ResponseHeadVo();
+        User setUser = new User();
 
-        return ResponseEntity.ok().body(
-                new ResponseSimpleVo(
-                        HttpStatus.OK.value(), "성공"
-                )
-        );
+        setUser.setUserId(registerUserDto.getUserId());
+        setUser.setUserPwd(passwordEncoder.encode(registerUserDto.getUserPwd()));
+        setUser.setName(registerUserDto.getName());
+        setUser.setGroupRole(registerUserDto.getGroupRole());
+        userService.createUser(setUser);
+
+        User user = userService.getUserById(setUser.getUserId()).get();
+
+        responseHeadVo.setCode(resMsg.value());
+        responseHeadVo.setMessage(resMsg.getReasonPhrase());
+        responseHeadVo.setDetail("정상");
+        responseVo.setHead(responseHeadVo);
+        responseVo.setBody(new ResponseIdVo(user.getUuid()));
+
+        return ResponseEntity.status(resMsg).body(responseVo);
     }
 }

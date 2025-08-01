@@ -18,6 +18,7 @@ public class DataHubApplication {
 		SpringApplication.run(DataHubApplication.class, args);
 	}
 
+	// 스프링 시큐어리티 보다 우선순위 지정
 	@Bean
 	public FilterRegistrationBean<SwaggerFilter> filterRegistrationBean() {
 		FilterRegistrationBean<SwaggerFilter> registrationBean = new FilterRegistrationBean<>();

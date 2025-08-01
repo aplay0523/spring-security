@@ -32,7 +32,6 @@ public class JwtTokenProvider {
     private long tokenValidTime;
     private Key key;
 
-    // UserDetailsService 인터페이스 주입
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
@@ -62,13 +61,11 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         // 토큰에서 사용자 ID를 추출하여 UserDetailsService를 통해 UserDetails 객체를 로드
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
-        // UserDetails와 권한을 기반으로 UsernamePasswordAuthenticationToken 생성
-        // 비밀번호는 이미 인증된 상태이므로 빈 문자열 또는 null로 설정
+        // 비밀번호는 이미 인증된 상태이므로 빈 문자열로 설정
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getUserId(String token) {
-        // 서명 키를 사용하여 토큰 파싱 후, 클레임에서 subject(사용자 ID) 추출
         return Jwts.parserBuilder() // Jwts.parser() -> Jwts.parserBuilder()로 변경 (jjwt 0.10.0 이후 권장)
                 .setSigningKey(key) // Key 객체 사용
                 .build() // 파서 빌드

@@ -62,6 +62,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/dataHub/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest().authenticated()
                 )
+                // JWT 필터 우선 처리
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -76,6 +77,7 @@ public class WebSecurityConfig {
         return new RestTemplate();
     }
 
+    // CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

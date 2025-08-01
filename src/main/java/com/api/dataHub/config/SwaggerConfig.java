@@ -44,7 +44,7 @@ public class SwaggerConfig {
                                 .type(Type.APIKEY)
                                 .in(In.QUERY)
                                 .name("apiKeyAuth")
-                                .description("API Key를 입력하세요. API 사용에 반드시 필요합니다.")
+                                .description("API Key를 입력하세요.")
                         )
                 )
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth").addList("apiKeyAuth"));
