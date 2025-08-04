@@ -100,7 +100,6 @@ public class JwtAuthController {
 
             return ResponseEntity.status(resMsg).body(responseVo);
         }
-
     }
 
     @Operation(

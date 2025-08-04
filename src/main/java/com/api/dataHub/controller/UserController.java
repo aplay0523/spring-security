@@ -35,7 +35,7 @@ public class UserController {
             summary = "사용자 업데이트",
             description = """
                     - 사용자 정보를 업데이트합니다.
-                    
+                                        
                     - Body
                     - 변경할 객체만 작성해주세요.(uuid 또는 userId는 필수입니다.)
                     1. uuid : 사용자 키
@@ -43,7 +43,7 @@ public class UserController {
                     3. userPwd : 사용자 비밀번호
                     4. userName : 사용자 명
                     5. groupRole : 권한 (ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
-                    
+                                        
                     - API 키, JWT 토큰이 필요합니다.
                     """,
             responses = {
@@ -55,9 +55,9 @@ public class UserController {
     @PostMapping(value = "/dataHub/user", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody UserDetailDto userDetailDto) {
 
-        if(userDetailDto.getUserId() != null) {
+        if (userDetailDto.getUserId() != null) {
             userService.updateUser(userDetailDto);
-        } else if(userDetailDto.getUuid() != null) {
+        } else if (userDetailDto.getUuid() != null) {
             userService.updateByUserUuid(userDetailDto);
         }
 
@@ -72,10 +72,10 @@ public class UserController {
             summary = "사용자 조회",
             description = """
                     - 사용자를 조회합니다.
-                    
+                                        
                     - Body
                     1. uuid : 사용자 키
-                    
+                                        
                     - API 키, JWT 토큰이 필요합니다.
                     """,
             responses = {
@@ -98,11 +98,11 @@ public class UserController {
             summary = "사용자 목록 조회",
             description = """
                     - 사용자를 목록 조회합니다.
-                    
+                                        
                     - Body
                     1. groupRole : 권한 (ROLE_ADMIN, ROLE_MANAGER, ROLE_USER)
                     2. useYn : 계정 잠금 유무 (Y, N)
-                    
+                                        
                     - API 키, JWT 토큰이 필요합니다.
                     """,
             responses = {
@@ -112,11 +112,14 @@ public class UserController {
             }
     )
     @GetMapping(value = "/dataHub/users")
-    public ResponseEntity<?> getUserByUuid(@RequestParam("groupRole") String groupRole, @RequestParam("useYn") String useYn) {
+    public ResponseEntity<?> getUserByUuid(@RequestParam("groupRole") String groupRole,
+            @RequestParam("useYn") String useYn) {
 
-        if(groupRole.equals("ROLE_ADMIN") || groupRole.equals("ROLE_MANAGER") || groupRole.equals("ROLE_USER")) {
+        if (groupRole.equals("ROLE_ADMIN") || groupRole.equals("ROLE_MANAGER") || groupRole.equals(
+                "ROLE_USER")) {
             return ResponseEntity.ok().body(
-                    new ResponseBodyVo(new ResponseListVo<>(userService.getDetailUserList(groupRole, useYn)),
+                    new ResponseBodyVo(
+                            new ResponseListVo<>(userService.getDetailUserList(groupRole, useYn)),
                             HttpStatus.OK.value(), "성공"
                     )
             );
@@ -129,10 +132,10 @@ public class UserController {
             summary = "사용자 삭제",
             description = """
                     - 사용자 삭제 진행합니다.
-                    
+                                        
                     - Body
                     1. uuid : 사용자 키
-                    
+                                        
                     - API 키, JWT 토큰이 필요합니다.
                     """,
             responses = {
