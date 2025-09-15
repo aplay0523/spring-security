@@ -1,5 +1,5 @@
 # 상세정리
-* [노션 정리](https://www.notion.so/API-Server-23d9271921f480eebd55d94db1009e9e)
+* [노션 정리](https://uk-study.notion.site/API-Server-26f09e879c048124b7bac9e25d2092c0?pvs=74)
 
 ## 1.개발 환경
  * Version: Java 17
