@@ -18,6 +18,7 @@
  * CI/CD: GitHub Actions, Docker
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/bbab6b30-9672-408c-93a0-835d863d39cb" />
+
 # 설정
 ## Spring Security
 * CSRF, 로그인폼 비활성화
